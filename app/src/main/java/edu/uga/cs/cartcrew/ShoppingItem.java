@@ -2,17 +2,18 @@ package edu.uga.cs.cartcrew;
 
 public class ShoppingItem {
     private String name;
-    private int quantity;
+    private String quantity;
 
-    public ShoppingItem() {
-        // Default constructor required for calls to DataSnapshot.getValue()
-    }
+    // Default constructor required for calls to DataSnapshot.getValue(ShoppingItem.class)
+    public ShoppingItem() { }
 
-    public ShoppingItem(String name, int quantity) {
+    // Constructor with name and quantity
+    public ShoppingItem(String name, String quantity) {
         this.name = name;
         this.quantity = quantity;
     }
 
+    // Getter and setter for name
     public String getName() {
         return name;
     }
@@ -21,11 +22,12 @@ public class ShoppingItem {
         this.name = name;
     }
 
-    public int getQuantity() {
+    // Getter and setter for quantity
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 }
