@@ -94,6 +94,13 @@ public class SignupActivity extends AppCompatActivity {
                         .addOnSuccessListener(docRef -> {
                             Log.d("CartCrew", "Added");
                             // transition to new activity here?
+
+                            // Transition to the Management Page after a successful sign-up
+                            Intent intent = new Intent(SignupActivity.this, ShoppingListManagementActivity.class);
+                            startActivity(intent);
+                            finish();
+
+
                         })
                         .addOnFailureListener(e -> showError(e.getMessage()));
             }
