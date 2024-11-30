@@ -2,6 +2,7 @@ package edu.uga.cs.cartcrew;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -40,9 +41,12 @@ public class AddShoppingItemDialogFragment extends DialogFragment {
         if (!name.isEmpty()) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("shoppingList");
             ref.push().setValue(new ShoppingItem(name, quantity)).addOnSuccessListener(aVoid ->
-                    Toast.makeText(getActivity(), "Item added!", Toast.LENGTH_SHORT).show()
+                    // this line crashes right now - i think it is because the dialog is being
+                    // dismissed before the toast shows since the error says the dialog is
+                    // no longer attached to an activity
+                    Toast.makeText(requireActivity(), "Item added!", Toast.LENGTH_SHORT).show()
             ).addOnFailureListener(e ->
-                    Toast.makeText(getActivity(), "Failed to add item", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireActivity(), "Failed to add item", Toast.LENGTH_SHORT).show()
             );
         } else {
             Toast.makeText(getActivity(), "Item name is required", Toast.LENGTH_SHORT).show();
