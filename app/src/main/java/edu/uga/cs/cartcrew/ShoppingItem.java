@@ -1,6 +1,7 @@
 package edu.uga.cs.cartcrew;
 
 public class ShoppingItem {
+    private String key;
     private String name;
     private String quantity;
 
@@ -9,8 +10,17 @@ public class ShoppingItem {
 
     // Constructor with name and quantity
     public ShoppingItem(String name, String quantity) {
+        this.key = null;
         this.name = name;
         this.quantity = quantity;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     // Getter and setter for name

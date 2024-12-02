@@ -11,49 +11,57 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ShoppingItemHolder> {
+public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder> {
 
-    private List<ShoppingItem> shoppingList;
+    private List<ShoppingItem> itemList;
     private Context context;
 
-    public ShoppingListAdapter(List<ShoppingItem> shoppingList, Context context) {
-        this.shoppingList = shoppingList;
+    public ShoppingListAdapter(List<ShoppingItem> itemList, Context context) {
+        this.itemList = itemList;
         this.context = context;
-    }
-
-    class ShoppingItemHolder extends RecyclerView.ViewHolder {
-        TextView itemName;
-        TextView itemQuantity;
-
-        public ShoppingItemHolder(View itemView) {
-            super(itemView);
-            itemName = itemView.findViewById(R.id.itemName);
-            itemQuantity = itemView.findViewById(R.id.itemQuantity);
-        }
     }
 
     @NonNull
     @Override
-    public ShoppingItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shopping_list_item, parent, false);
-        return new ShoppingItemHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.shopping_list_item, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ShoppingItemHolder holder, int position) {
-        ShoppingItem shoppingItem = shoppingList.get(position);
-        holder.itemName.setText(shoppingItem.getName());
-        holder.itemQuantity.setText(String.valueOf(shoppingItem.getQuantity()));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        ShoppingItem item = itemList.get(position);
+
+        // Bind data to the item views
+        holder.itemNameTextView.setText(item.getName());
+        holder.itemQuantityTextView.setText(item.getQuantity());
+
+        // Handle edit dialog opening when an item is clicked
+        holder.itemView.setOnClickListener(v -> {
+            EditShoppingItemDialogFragment editDialog = EditShoppingItemDialogFragment.newInstance(
+                    position,
+                    item.getKey(),
+                    item.getName(),
+                    item.getQuantity()
+            );
+            // Show the dialog
+            editDialog.show(((ShoppingListActivity) context).getSupportFragmentManager(), "EditDialog");
+        });
     }
 
     @Override
     public int getItemCount() {
-        return shoppingList.size();
+        return itemList.size();
     }
 
-    // Add a new shopping item and notify the adapter
-    public void addItem(ShoppingItem item) {
-        shoppingList.add(item);
-        notifyItemInserted(shoppingList.size() - 1);
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView itemNameTextView, itemQuantityTextView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            itemNameTextView = itemView.findViewById(R.id.itemName);
+            itemQuantityTextView = itemView.findViewById(R.id.itemQuantity);
+        }
     }
 }

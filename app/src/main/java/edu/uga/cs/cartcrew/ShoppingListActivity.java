@@ -2,7 +2,6 @@ package edu.uga.cs.cartcrew;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity
-        implements AddShoppingItemDialogFragment.AddShoppingItemDialogListener {
+        implements AddShoppingItemDialogFragment.AddShoppingItemDialogListener,
+        EditShoppingItemDialogFragment.EditShoppingItemDialogListener {
+
+    private static final String DEBUG_TAG = "ShoppingListActivity";
 
     private RecyclerView recyclerView;
     private ShoppingListAdapter adapter;
@@ -38,17 +40,14 @@ public class ShoppingListActivity extends AppCompatActivity
         adapter = new ShoppingListAdapter(itemList, this);
         recyclerView.setAdapter(adapter);
 
-        // Initialize Firebase reference
         databaseReference = FirebaseDatabase.getInstance().getReference("shoppingList");
 
-        // FloatingActionButton to add a new item
         FloatingActionButton addButton = findViewById(R.id.floatingActionButton);
         addButton.setOnClickListener(v -> {
             AddShoppingItemDialogFragment dialog = new AddShoppingItemDialogFragment();
             dialog.show(getSupportFragmentManager(), "AddItemDialog");
         });
 
-        // Load existing shopping list items
         loadShoppingList();
     }
 
@@ -59,14 +58,17 @@ public class ShoppingListActivity extends AppCompatActivity
                 itemList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ShoppingItem item = postSnapshot.getValue(ShoppingItem.class);
-                    itemList.add(item);
+                    if (item != null) {
+                        item.setKey(postSnapshot.getKey());
+                        itemList.add(item);
+                    }
                 }
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("ShoppingListActivity", "Database read failed: " + error.getMessage());
+                Log.e(DEBUG_TAG, "Database read failed: " + error.getMessage());
             }
         });
     }
@@ -76,5 +78,23 @@ public class ShoppingListActivity extends AppCompatActivity
         databaseReference.push().setValue(shoppingItem)
                 .addOnSuccessListener(aVoid -> Toast.makeText(this, "Item added successfully!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to add item", Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    public void updateShoppingItem(int position, ShoppingItem shoppingItem, int action) {
+        if (action == EditShoppingItemDialogFragment.SAVE) {
+            DatabaseReference itemRef = databaseReference.child(shoppingItem.getKey());
+            itemRef.setValue(shoppingItem)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(this, "Item updated successfully!", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to update item", Toast.LENGTH_SHORT).show());
+            adapter.notifyItemChanged(position);
+        } else if (action == EditShoppingItemDialogFragment.DELETE) {
+            DatabaseReference itemRef = databaseReference.child(shoppingItem.getKey());
+            itemRef.removeValue()
+                    .addOnSuccessListener(aVoid -> Toast.makeText(this, "Item deleted successfully!", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to delete item", Toast.LENGTH_SHORT).show());
+            itemList.remove(position);
+            adapter.notifyItemRemoved(position);
+        }
     }
 }
