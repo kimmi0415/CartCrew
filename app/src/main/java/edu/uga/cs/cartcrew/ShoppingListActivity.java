@@ -3,6 +3,7 @@ package edu.uga.cs.cartcrew;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +20,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingListActivity extends AppCompatActivity {
-    private static final String DEBUG_TAG = "ShoppingListActivity";
+public class ShoppingListActivity extends AppCompatActivity
+        implements AddShoppingItemDialogFragment.AddShoppingItemDialogListener {
+
     private RecyclerView recyclerView;
     private ShoppingListAdapter adapter;
     private List<ShoppingItem> itemList = new ArrayList<>();
-    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +34,26 @@ public class ShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_list);
 
         recyclerView = findViewById(R.id.recyclerView);
-        FloatingActionButton addButton = findViewById(R.id.floatingActionButton);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ShoppingListAdapter(itemList, this);
         recyclerView.setAdapter(adapter);
 
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("shoppingList");
+        // Initialize Firebase reference
+        databaseReference = FirebaseDatabase.getInstance().getReference("shoppingList");
 
-        // Fetch the data
-        ref.addValueEventListener(new ValueEventListener() {
+        // FloatingActionButton to add a new item
+        FloatingActionButton addButton = findViewById(R.id.floatingActionButton);
+        addButton.setOnClickListener(v -> {
+            AddShoppingItemDialogFragment dialog = new AddShoppingItemDialogFragment();
+            dialog.show(getSupportFragmentManager(), "AddItemDialog");
+        });
+
+        // Load existing shopping list items
+        loadShoppingList();
+    }
+
+    private void loadShoppingList() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 itemList.clear();
@@ -55,14 +66,15 @@ public class ShoppingListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(DEBUG_TAG, "Database read failed: " + error.getMessage());
+                Log.e("ShoppingListActivity", "Database read failed: " + error.getMessage());
             }
         });
+    }
 
-        // Add new item dialog
-        addButton.setOnClickListener(view -> {
-            AddShoppingItemDialogFragment dialog = new AddShoppingItemDialogFragment();
-            dialog.show(getSupportFragmentManager(), "AddItemDialog");
-        });
+    @Override
+    public void addShoppingItem(ShoppingItem shoppingItem) {
+        databaseReference.push().setValue(shoppingItem)
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Item added successfully!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to add item", Toast.LENGTH_SHORT).show());
     }
 }
