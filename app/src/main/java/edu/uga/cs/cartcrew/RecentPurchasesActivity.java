@@ -1,5 +1,6 @@
 package edu.uga.cs.cartcrew;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class RecentPurchasesActivity extends AppCompatActivity
@@ -56,9 +59,11 @@ public class RecentPurchasesActivity extends AppCompatActivity
         header.setText("Recent Purchases");
         databaseReference = FirebaseDatabase.getInstance().getReference("purchaseList");
 
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                settleCosts();
                 // TODO - settle the cost
                 // iterate through itemList - each object holds
                 // total cost of purchase and who bought it,
@@ -69,6 +74,44 @@ public class RecentPurchasesActivity extends AppCompatActivity
 
         loadShoppingList();
     }
+
+    private void settleCosts() {
+        if (itemList.isEmpty()) {
+            Toast.makeText(this, "No purchases to settle.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Step 1: Calculate total cost and individual roommate expenditures
+        double totalCost = 0.0;
+        Map<String, Double> roommateExpenses = new HashMap<>();
+
+        for (Purchase purchase : itemList) {
+            totalCost += purchase.getPrice();
+            String buyer = purchase.getBuyer();
+            roommateExpenses.put(buyer, roommateExpenses.getOrDefault(buyer, 0.0) + purchase.getPrice());
+        }
+
+        // Step 2: Calculate the average amount spent
+        int numberOfRoommates = roommateExpenses.size();
+        double averageSpent = totalCost / numberOfRoommates;
+
+        // Step 3: Prepare the settlement details
+        StringBuilder result = new StringBuilder("Settlement Details:\n");
+        for (Map.Entry<String, Double> entry : roommateExpenses.entrySet()) {
+            String roommate = entry.getKey();
+            double spent = entry.getValue();
+            double difference = spent - averageSpent;
+
+            result.append(String.format("%s spent: $%.2f, Difference: $%.2f\n", roommate, spent, difference));
+        }
+        result.append(String.format("Total Spent: $%.2f, Average Spent: $%.2f", totalCost, averageSpent));
+
+        // Step 4: Launch SettlementDetailsActivity
+        Intent intent = new Intent(this, SettlementDetailsActivity.class);
+        intent.putExtra("settlementDetails", result.toString());
+        startActivity(intent);
+    }
+
 
     private void loadShoppingList() {
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -100,3 +143,5 @@ public class RecentPurchasesActivity extends AppCompatActivity
         adapter.notifyItemChanged(position);
     }
 }
+
+
