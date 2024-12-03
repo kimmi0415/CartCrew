@@ -65,7 +65,7 @@ public class AddShoppingItemDialogFragment extends DialogFragment {
 
     // Interface for communicating with the activity
     public interface AddShoppingItemDialogListener {
-        void addShoppingItem(ShoppingItem shoppingItem);
+        void addShoppingItem(ShoppingItem shoppingItem, boolean showToast);
         void finalizePurchase(double price);
     }
 
@@ -118,7 +118,7 @@ public class AddShoppingItemDialogFragment extends DialogFragment {
         if (!name.isEmpty()) {
             // Pass the new shopping item to the parent activity
             ShoppingItem newItem = new ShoppingItem(name, quantity);
-            listener.addShoppingItem(newItem);
+            listener.addShoppingItem(newItem, false);
         } else {
             // Show a Toast if the item name is empty
             Toast.makeText(getContext(), "Item name is required", Toast.LENGTH_SHORT).show();

@@ -29,7 +29,7 @@ public class EditShoppingItemDialogFragment extends DialogFragment {
 
     // Interface for communication with parent activity
     public interface EditShoppingItemDialogListener {
-        void updateShoppingItem(int position, ShoppingItem shoppingItem, int action);
+        void updateShoppingItem(int position, ShoppingItem shoppingItem, int action, boolean showToast);
     }
 
     private EditShoppingItemDialogListener listener;
@@ -100,7 +100,7 @@ public class EditShoppingItemDialogFragment extends DialogFragment {
             if (!updatedName.isEmpty()) {
                 ShoppingItem updatedItem = new ShoppingItem(updatedName, updatedQuantity);
                 updatedItem.setKey(key);
-                listener.updateShoppingItem(position, updatedItem, SAVE);
+                listener.updateShoppingItem(position, updatedItem, SAVE, true);
             }
         }
     }
@@ -110,7 +110,7 @@ public class EditShoppingItemDialogFragment extends DialogFragment {
         public void onClick(DialogInterface dialog, int which) {
             ShoppingItem itemToDelete = new ShoppingItem(name, quantity);
             itemToDelete.setKey(key);
-            listener.updateShoppingItem(position, itemToDelete, DELETE);
+            listener.updateShoppingItem(position, itemToDelete, DELETE, true);
         }
     }
 }

@@ -30,12 +30,14 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         Button addItemButton = findViewById(R.id.buttonAddItem);
         Button viewListButton = findViewById(R.id.buttonViewList);
         Button viewBasketButton = findViewById(R.id.buttonViewBasket);
+        Button viewRecentPurchasesButton = findViewById(R.id.buttonViewRecentPurchases);
         signedInTextView = findViewById(R.id.textViewSignedIn);
 
         // Set up button click listeners
         addItemButton.setOnClickListener(new AddItemButtonClickListener());
         viewListButton.setOnClickListener(new ViewListButtonClickListener());
         viewBasketButton.setOnClickListener(new ViewBasketButtonClickListener());
+        viewRecentPurchasesButton.setOnClickListener(new ViewPurchasesButtonClickListener());
 
         // Firebase authentication listener
         FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
@@ -87,7 +89,7 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
     private class ViewPurchasesButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ShoppingListActivity.class);
+            Intent intent = new Intent(view.getContext(), RecentPurchasesActivity.class);
             intent.putExtra("type", "purchases");
             startActivity(intent);
         }

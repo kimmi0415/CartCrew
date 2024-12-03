@@ -24,6 +24,9 @@
             android:name=".SignupActivity"
             android:exported="false" />
         <activity
+            android:name=".RecentPurchasesActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity">

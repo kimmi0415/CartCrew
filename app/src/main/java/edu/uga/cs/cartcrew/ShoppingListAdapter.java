@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,10 +64,11 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
                 @Override
                 public void onClick(View v) {
                     // remove from main shopping list
-                    sla.updateShoppingItem(holder.getAdapterPosition(), item, EditShoppingItemDialogFragment.DELETE);
+                    sla.updateShoppingItem(holder.getAdapterPosition(), item, EditShoppingItemDialogFragment.DELETE, false);
                     // add to shopping basket
                     item.setKey(null);
                     sla.addShoppingItem(item, "shoppingBasket");
+                    Toast.makeText(context, "Item moved to shopping basket", Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (type.equals("basket")) {
@@ -75,10 +77,24 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
                 @Override
                 public void onClick(View v) {
                     // remove from main shopping list
-                    sla.updateShoppingItem(holder.getAdapterPosition(), item, EditShoppingItemDialogFragment.DELETE);
+                    sla.updateShoppingItem(holder.getAdapterPosition(), item, EditShoppingItemDialogFragment.DELETE, false);
                     // add to shopping basket
                     item.setKey(null);
                     sla.addShoppingItem(item, "shoppingList");
+                    Toast.makeText(context, "Item returned to shopping list", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            holder.buyButton.setText("Return");
+            holder.buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // remove from main shopping list
+                    sla.deleteShoppingItemFromRecentlyPurchasedList(holder.getAdapterPosition());
+                    // add to shopping basket
+                    item.setKey(null);
+                    sla.addShoppingItem(item, "shoppingList");
+                    Toast.makeText(context, "Item returned to shopping list", Toast.LENGTH_SHORT).show();
                 }
             });
         }

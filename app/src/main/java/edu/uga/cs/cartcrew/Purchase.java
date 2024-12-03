@@ -7,9 +7,10 @@ import java.util.Locale;
 
 public class Purchase {
     private double price;
-    public List<ShoppingItem> items;
+    private List<ShoppingItem> items;
     private String buyer;
     private long date;
+    private String key;
 
     // Default constructor required for calls to DataSnapshot.getValue(ShoppingItem.class)
     public Purchase() { }
@@ -61,5 +62,17 @@ public class Purchase {
         Date d = new Date(date);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
         return sdf.format(d);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String s) {
+        key = s;
+    }
+
+    public String getPrettyPrice() {
+        return String.format("%.2f", price);
     }
 }

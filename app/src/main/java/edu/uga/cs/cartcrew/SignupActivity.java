@@ -33,7 +33,6 @@ public class SignupActivity extends AppCompatActivity {
     Button button;
     EditText emailField;
     EditText passwordField;
-    EditText nameField;
 
     private FirebaseAuth mAuth;
 
@@ -53,17 +52,12 @@ public class SignupActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView2);
         textView.setText("Sign Up");
 
-        nameField = findViewById(R.id.editTextText);
         emailField = findViewById(R.id.editTextTextEmailAddress);
         passwordField = findViewById(R.id.editTextTextPassword);
 
         button = findViewById(R.id.mainButton);
         button.setText("Sign Up");
         button.setOnClickListener(v -> {
-            // validate name
-            String enteredName = nameField.getText().toString();
-            if (enteredName.trim().isEmpty()) showError("please enter a name.");
-
             // retrieve email and password
             String enteredEmail = emailField.getText().toString();
             String enteredPassword = passwordField.getText().toString();
@@ -78,33 +72,10 @@ public class SignupActivity extends AppCompatActivity {
         @Override
         public void onComplete(@NonNull Task<AuthResult> task) {
             if (task.isSuccessful()) {
-                FirebaseUser user = mAuth.getCurrentUser();
-
-                // if successful, add name to database
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                CollectionReference userCollection = db.collection("users");
-
-                // create a map to store info (will become the document in the firestore)
-                Map<String, Object> userDetails = new HashMap<>();
-                userDetails.put("uid", user.getUid());
-                userDetails.put("name", nameField.getText().toString());
-
-                // add the document to firestore in the "users" collection
-                userCollection.add(userDetails)
-                        .addOnSuccessListener(docRef -> {
-                            Log.d("CartCrew", "Added");
-                            // transition to new activity here?
-
-                            // Transition to the Management Page after a successful sign-up
-                            Intent intent = new Intent(SignupActivity.this, ShoppingListManagementActivity.class);
-                            startActivity(intent);
-                            finish();
-
-
-                        })
-                        .addOnFailureListener(e -> showError(e.getMessage()));
-            }
-            else {
+                Intent intent = new Intent(SignupActivity.this, ShoppingListManagementActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
                 Exception taskException = task.getException();
                 showError(taskException == null ? "" : taskException.getMessage());
             }
