@@ -84,53 +84,26 @@ public class ShoppingListActivity extends AppCompatActivity
     }
 
     private void loadShoppingList() {
-        if (type.equals("list") || type.equals("basket")) {
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    itemList.clear();
-                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                        ShoppingItem item = postSnapshot.getValue(ShoppingItem.class);
-                        if (item != null) {
-                            item.setKey(postSnapshot.getKey());
-                            itemList.add(item);
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e(DEBUG_TAG, "Database read failed: " + error.getMessage());
-                }
-            });
-        } else {
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    itemList.clear();
-                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                        // should only be one
-                        Log.d("D", postSnapshot.getValue() + "");
-                        Log.d("D", type);
-                        ShoppingItem item = postSnapshot.getValue(ShoppingItem.class);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                itemList.clear();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ShoppingItem item = postSnapshot.getValue(ShoppingItem.class);
+                    Log.d("D", postSnapshot.getKey());
+                    if (item != null) {
+                        item.setKey(postSnapshot.getKey());
                         itemList.add(item);
-                        /*
-                        ShoppingItem item = postSnapshot.getValue(ShoppingItem.class);
-                        if (item != null) {
-                            item.setKey(postSnapshot.getKey());
-                            itemList.add(item);
-                        } */
                     }
-                    adapter.notifyDataSetChanged();
                 }
+                adapter.notifyDataSetChanged();
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e(DEBUG_TAG, "Database read failed: " + error.getMessage());
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(DEBUG_TAG, "Database read failed: " + error.getMessage());
+            }
+        });
     }
 
     @Override
