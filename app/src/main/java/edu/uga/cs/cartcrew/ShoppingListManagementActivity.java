@@ -29,11 +29,13 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         // Initialize buttons and signed-in text view
         Button addItemButton = findViewById(R.id.buttonAddItem);
         Button viewListButton = findViewById(R.id.buttonViewList);
+        Button viewBasketButton = findViewById(R.id.buttonViewBasket);
         signedInTextView = findViewById(R.id.textViewSignedIn);
 
         // Set up button click listeners
         addItemButton.setOnClickListener(new AddItemButtonClickListener());
         viewListButton.setOnClickListener(new ViewListButtonClickListener());
+        viewBasketButton.setOnClickListener(new ViewBasketButtonClickListener());
 
         // Firebase authentication listener
         FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
@@ -52,6 +54,8 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
     }
 
     // Button listener for adding a new item to the shopping list
+    // right now this crashes the activity, if we can't fix it we could
+    // just remove it tbh
     private class AddItemButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -65,9 +69,30 @@ public class ShoppingListManagementActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ShoppingListActivity.class);
+            intent.putExtra("type", "list");
             startActivity(intent);
         }
     }
+
+    // Button listener for viewing the shopping basket
+    private class ViewBasketButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), ShoppingListActivity.class);
+            intent.putExtra("type", "basket");
+            startActivity(intent);
+        }
+    }
+    // Button listener for viewing the recent purchases
+    private class ViewPurchasesButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), ShoppingListActivity.class);
+            intent.putExtra("type", "purchases");
+            startActivity(intent);
+        }
+    }
+
 
     @Override
     protected void onStart() {

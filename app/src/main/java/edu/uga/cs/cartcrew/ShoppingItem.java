@@ -40,4 +40,9 @@ public class ShoppingItem {
     public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return key + " " + name + " " + quantity;
+    }
 }

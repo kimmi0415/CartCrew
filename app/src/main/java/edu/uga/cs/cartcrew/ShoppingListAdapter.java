@@ -1,9 +1,11 @@
 package edu.uga.cs.cartcrew;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,10 +17,14 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     private List<ShoppingItem> itemList;
     private Context context;
+    private ShoppingListActivity sla;
+    private String type;
 
-    public ShoppingListAdapter(List<ShoppingItem> itemList, Context context) {
+    public ShoppingListAdapter(List<ShoppingItem> itemList, Context context, ShoppingListActivity sla, String type) {
         this.itemList = itemList;
         this.context = context;
+        this.sla = sla;
+        this.type = type;
     }
 
     @NonNull
@@ -38,16 +44,44 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         holder.itemQuantityTextView.setText(item.getQuantity());
 
         // Handle edit dialog opening when an item is clicked
-        holder.itemView.setOnClickListener(v -> {
-            EditShoppingItemDialogFragment editDialog = EditShoppingItemDialogFragment.newInstance(
-                    position,
-                    item.getKey(),
-                    item.getName(),
-                    item.getQuantity()
-            );
-            // Show the dialog
-            editDialog.show(((ShoppingListActivity) context).getSupportFragmentManager(), "EditDialog");
-        });
+        if (type.equals("list")) {
+            holder.itemView.setOnClickListener(v -> {
+                EditShoppingItemDialogFragment editDialog = EditShoppingItemDialogFragment.newInstance(
+                        position,
+                        item.getKey(),
+                        item.getName(),
+                        item.getQuantity()
+                );
+                // Show the dialog
+                editDialog.show(((ShoppingListActivity) context).getSupportFragmentManager(), "EditDialog");
+            });
+        }
+
+        if (type.equals("list")) {
+            holder.buyButton.setText("Buy");
+            holder.buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // remove from main shopping list
+                    sla.updateShoppingItem(holder.getAdapterPosition(), item, EditShoppingItemDialogFragment.DELETE);
+                    // add to shopping basket
+                    item.setKey(null);
+                    sla.addShoppingItem(item, "shoppingBasket");
+                }
+            });
+        } else if (type.equals("basket")) {
+            holder.buyButton.setText("Return");
+            holder.buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // remove from main shopping list
+                    sla.updateShoppingItem(holder.getAdapterPosition(), item, EditShoppingItemDialogFragment.DELETE);
+                    // add to shopping basket
+                    item.setKey(null);
+                    sla.addShoppingItem(item, "shoppingList");
+                }
+            });
+        }
     }
 
     @Override
@@ -57,11 +91,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView itemNameTextView, itemQuantityTextView;
+        public Button buyButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemNameTextView = itemView.findViewById(R.id.itemName);
             itemQuantityTextView = itemView.findViewById(R.id.itemQuantity);
+            buyButton = itemView.findViewById(R.id.buyButton);
         }
     }
 }

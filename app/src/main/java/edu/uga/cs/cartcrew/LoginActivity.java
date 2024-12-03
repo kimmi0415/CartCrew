@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
                 // launch main activity with user here?
-                Intent intent = new Intent(LoginActivity.this, ShoppingListActivity.class);
+                Intent intent = new Intent(LoginActivity.this, ShoppingListManagementActivity.class);
                 startActivity(intent);
                 finish();
             }

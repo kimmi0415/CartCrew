@@ -2,6 +2,7 @@ package edu.uga.cs.cartcrew;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ShoppingListActivity extends AppCompatActivity
         implements AddShoppingItemDialogFragment.AddShoppingItemDialogListener,
@@ -29,24 +33,47 @@ public class ShoppingListActivity extends AppCompatActivity
     private ShoppingListAdapter adapter;
     private List<ShoppingItem> itemList = new ArrayList<>();
     private DatabaseReference databaseReference;
+    private String type;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            type = extras.getString("type");
+        }
         setContentView(R.layout.activity_shopping_list);
+        mAuth = FirebaseAuth.getInstance();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ShoppingListAdapter(itemList, this);
+        adapter = new ShoppingListAdapter(itemList, this, this, type);
         recyclerView.setAdapter(adapter);
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("shoppingList");
-
         FloatingActionButton addButton = findViewById(R.id.floatingActionButton);
-        addButton.setOnClickListener(v -> {
-            AddShoppingItemDialogFragment dialog = new AddShoppingItemDialogFragment();
-            dialog.show(getSupportFragmentManager(), "AddItemDialog");
-        });
+        TextView header = findViewById(R.id.textView);
+        header.setText("Shopping Basket");
+
+        switch (type) {
+            case "list":
+                databaseReference = FirebaseDatabase.getInstance().getReference("shoppingList");
+                addButton.setOnClickListener(v -> {
+                    AddShoppingItemDialogFragment dialog = new AddShoppingItemDialogFragment();
+                    dialog.show(getSupportFragmentManager(), "AddItemDialog");
+                });
+                break;
+            case "basket":
+                databaseReference = FirebaseDatabase.getInstance().getReference("shoppingBasket");
+                addButton.setImageResource(R.drawable.check);
+                addButton.setOnClickListener(v -> {
+                    FinalizePurchaseDialogFragment dialog = new FinalizePurchaseDialogFragment();
+                    dialog.show(getSupportFragmentManager(), "FinalizePurchaseDialog");
+                });
+                break;
+            default:
+                databaseReference = FirebaseDatabase.getInstance().getReference("shoppingList");
+                break;
+        }
 
         loadShoppingList();
     }
@@ -96,5 +123,38 @@ public class ShoppingListActivity extends AppCompatActivity
             itemList.remove(position);
             adapter.notifyItemRemoved(position);
         }
+    }
+
+    public void addShoppingItem(ShoppingItem item, String reference) {
+        DatabaseReference temp = databaseReference;
+        databaseReference = FirebaseDatabase.getInstance().getReference(reference);
+        addShoppingItem(item);
+        databaseReference = temp;
+    }
+
+    public void finalizePurchase(double price) {
+        // will only be called when the database reference is for shoppingBasket
+        for (ShoppingItem item : itemList) item.setKey(null);
+        Purchase purchase = new Purchase(price, itemList, mAuth.getCurrentUser().getEmail());
+        DatabaseReference purchaseList = FirebaseDatabase.getInstance().getReference("purchaseList");
+        purchaseList.push().setValue(purchase)
+                .addOnFailureListener(e -> Toast.makeText(this, "Purchase failed", Toast.LENGTH_SHORT).show());
+
+        // clear shopping basket
+        databaseReference.setValue(null).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Purchased successfully!", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Purchase failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void updateShoppingItem(int position, ShoppingItem shoppingItem, int action, String reference) {
+        DatabaseReference temp = databaseReference;
+        databaseReference = FirebaseDatabase.getInstance().getReference(reference);
+        updateShoppingItem(position, shoppingItem, action);
+        databaseReference = temp;
     }
 }

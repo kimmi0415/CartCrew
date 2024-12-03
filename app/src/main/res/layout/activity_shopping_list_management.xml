@@ -7,6 +7,8 @@
     tools:context=".ShoppingListManagementActivity">
 
     <!-- TextView to display user information -->
+
+    <!-- Button to add a new item -->
     <TextView
         android:id="@+id/textViewSignedIn"
         android:layout_width="wrap_content"
@@ -15,12 +17,12 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonAddItem"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.351"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <!-- Button to add a new item -->
     <Button
         android:id="@+id/buttonAddItem"
         android:layout_width="0dp"
@@ -29,6 +31,7 @@
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@+id/buttonViewList"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSignedIn" />
 
@@ -39,9 +42,35 @@
         android:layout_height="wrap_content"
         android:text="View Shopping List"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonViewBasket"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonAddItem" />
+
+    <Button
+        android:id="@+id/buttonViewBasket"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="View Shopping Basket"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/buttonViewRecentPurchases"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonViewList" />
+
+    <Button
+        android:id="@+id/buttonViewRecentPurchases"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="View Recent Purchases"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonViewBasket"
+        app:layout_constraintVertical_bias="0.634" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

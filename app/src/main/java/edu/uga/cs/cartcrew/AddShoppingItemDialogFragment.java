@@ -66,6 +66,7 @@ public class AddShoppingItemDialogFragment extends DialogFragment {
     // Interface for communicating with the activity
     public interface AddShoppingItemDialogListener {
         void addShoppingItem(ShoppingItem shoppingItem);
+        void finalizePurchase(double price);
     }
 
     private AddShoppingItemDialogListener listener;
