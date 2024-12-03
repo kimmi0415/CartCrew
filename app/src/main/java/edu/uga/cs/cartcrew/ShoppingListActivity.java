@@ -90,7 +90,6 @@ public class ShoppingListActivity extends AppCompatActivity
                 itemList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ShoppingItem item = postSnapshot.getValue(ShoppingItem.class);
-                    Log.d("D", postSnapshot.getKey());
                     if (item != null) {
                         item.setKey(postSnapshot.getKey());
                         itemList.add(item);
