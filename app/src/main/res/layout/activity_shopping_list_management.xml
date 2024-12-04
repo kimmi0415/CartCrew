@@ -1,76 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShoppingListManagementActivity">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"> <!-- Center contents vertically -->
 
-    <!-- TextView to display user information -->
-
-    <!-- Button to add a new item -->
+    <!-- TextView to show the signed-in email -->
     <TextView
         android:id="@+id/textViewSignedIn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Signed in as: not signed in"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAddItem"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.351"
-        app:layout_constraintVertical_chainStyle="packed" />
+        android:text="Signed in as: "
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingBottom="16dp"
+        android:textColor="#000" />
 
-    <Button
-        android:id="@+id/buttonAddItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Add New Item"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/buttonViewList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSignedIn" />
-
-    <!-- Button to view the shopping list -->
+    <!-- Existing buttons for adding items, viewing list, etc. -->
     <Button
         android:id="@+id/buttonViewList"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View Shopping List"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/buttonViewBasket"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAddItem" />
+        android:text="View Shopping List" />
 
     <Button
         android:id="@+id/buttonViewBasket"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View Shopping Basket"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/buttonViewRecentPurchases"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonViewList" />
+        android:text="View Basket" />
 
     <Button
         android:id="@+id/buttonViewRecentPurchases"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View Recent Purchases"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonViewBasket"
-        app:layout_constraintVertical_bias="0.634" />
+        android:text="View Recent Purchases" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Add the Logout button here -->
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+</LinearLayout>

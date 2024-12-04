@@ -81,7 +81,7 @@ public class RecentPurchasesActivity extends AppCompatActivity
             return;
         }
 
-        // Step 1: Calculate total cost and individual roommate expenditures
+        // Calculate total cost and individual roommate expenditures
         double totalCost = 0.0;
         Map<String, Double> roommateExpenses = new HashMap<>();
 
@@ -91,11 +91,11 @@ public class RecentPurchasesActivity extends AppCompatActivity
             roommateExpenses.put(buyer, roommateExpenses.getOrDefault(buyer, 0.0) + purchase.getPrice());
         }
 
-        // Step 2: Calculate the average amount spent
+// Calculate the average amount spent
         int numberOfRoommates = roommateExpenses.size();
         double averageSpent = totalCost / numberOfRoommates;
 
-        // Step 3: Prepare the settlement details
+// Prepare the settlement details
         StringBuilder result = new StringBuilder("Settlement Details:\n");
         for (Map.Entry<String, Double> entry : roommateExpenses.entrySet()) {
             String roommate = entry.getKey();
@@ -104,12 +104,16 @@ public class RecentPurchasesActivity extends AppCompatActivity
 
             result.append(String.format("%s spent: $%.2f, Difference: $%.2f\n", roommate, spent, difference));
         }
-        result.append(String.format("Total Spent: $%.2f, Average Spent: $%.2f", totalCost, averageSpent));
 
-        // Step 4: Launch SettlementDetailsActivity
+// Add Total and Average on new lines
+        result.append(String.format("Total Spent: $%.2f\n", totalCost));  // Added a newline after Total Spent
+        result.append(String.format("Average Spent: $%.2f", averageSpent)); // Added Average Spent on a new line
+
+// Launch SettlementDetailsActivity
         Intent intent = new Intent(this, SettlementDetailsActivity.class);
         intent.putExtra("settlementDetails", result.toString());
         startActivity(intent);
+
     }
 
 

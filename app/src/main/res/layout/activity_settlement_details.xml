@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:text="Settlement Details"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:paddingTop="100dp"/>
 
     <Button
         android:id="@+id/clearPurchasesButton"

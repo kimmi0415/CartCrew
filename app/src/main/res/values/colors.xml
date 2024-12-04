@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="coconut">#FCEFDE</color>
+    <color name="tumeric">#FDC413</color>
+    <color name="saffron">#EB6539</color>
+    <color name="cumin">#A1371B</color>
+    <color name="bayleaf">#1F4F3D</color>
 </resources>

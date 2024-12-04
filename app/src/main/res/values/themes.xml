@@ -1,8 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Base.Theme.CartCrew" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Set primary color to dark gray -->
+        <item name="colorPrimary">#212121</item> <!-- Dark gray primary color -->
+        <item name="colorPrimaryVariant">#424242</item> <!-- Darker gray variant -->
+        <item name="colorOnPrimary">@android:color/white</item> <!-- White text/icons on primary color -->
+
+        <!-- Optionally, set secondary color (for secondary buttons, etc.) -->
+        <item name="colorSecondary">#616161</item> <!-- Medium gray for secondary color -->
+        <item name="colorOnSecondary">@android:color/white</item> <!-- White text/icons on secondary color -->
+
+        <!-- Background color -->
+        <item name="android:windowBackground">@android:color/white</item> <!-- White background -->
     </style>
 
     <style name="Theme.CartCrew" parent="Base.Theme.CartCrew" />
