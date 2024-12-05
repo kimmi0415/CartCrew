@@ -27,15 +27,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity which handles signing up.
+ */
 public class SignupActivity extends AppCompatActivity {
 
-    TextView textView;
-    Button button;
-    EditText emailField;
-    EditText passwordField;
+    TextView textView; // text displaying intent of activity
+    Button button; // signup button
+    EditText emailField; // email text entry
+    EditText passwordField; // password text entry
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth; // authentication handler
 
+    /**
+     * Creates and initializes the activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +78,9 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Custom listener to handle transitioning to the main activity after signing up
+     */
     class AuthenticationHandler implements OnCompleteListener<AuthResult> {
         @Override
         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -82,6 +95,10 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Creates a toast based on an exception and shows it to the user.
+     * @param s the exception message to show
+     */
     private void showError(String s) {
         Toast toast = Toast.makeText(this.getApplicationContext(),
                 "Signup Failed: " + s,

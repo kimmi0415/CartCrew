@@ -11,10 +11,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ *  The main screen of the app with sign-in and login buttons
+ */
 public class MainActivity extends AppCompatActivity {
-    Button signUpButton;
-    Button loginButton;
+    Button signUpButton; // button to launch signup actvity
+    Button loginButton; // button to launch login activity
 
+    /**
+     * Creates and initializes the activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Starts either the login or signup activity
+     * @param v the view which started the method
+     * @param type "Sign Up" or "Login
+     */
     private void startAuthenticationActivity(View v, String type) {
         Intent intent = new Intent(v.getContext(), (type.equals("Login") ? LoginActivity.class : SignupActivity.class));
         intent.putExtra("TYPE", type);

@@ -27,18 +27,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Activity to display recent purchases.
+ */
 public class RecentPurchasesActivity extends AppCompatActivity
         implements UpdatePriceDialogFragment.UpdatePriceDialogFragmentListener {
 
     private static final String DEBUG_TAG = "ShoppingListActivity";
 
-    private RecyclerView recyclerView;
-    private RecentPurchasesAdapter adapter;
-    private List<Purchase> itemList = new ArrayList<>();
-    private DatabaseReference databaseReference;
-    private String type;
-    private FirebaseAuth mAuth;
+    private RecyclerView recyclerView; // display for the items
+    private RecentPurchasesAdapter adapter; // adapter for the recycler view
+    private List<Purchase> itemList = new ArrayList<>(); // full list of purchases
+    private DatabaseReference databaseReference; // reference in the database to the purchaseList
+    private String type; // the type this is being used to show
+    private FirebaseAuth mAuth; // authentication handler
 
+    /**
+     * Runs on creation of the activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +59,7 @@ public class RecentPurchasesActivity extends AppCompatActivity
         setContentView(R.layout.activity_shopping_list);
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize views
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecentPurchasesAdapter(itemList, this, this, type);
@@ -59,22 +70,20 @@ public class RecentPurchasesActivity extends AppCompatActivity
         header.setText("Recent Purchases");
         databaseReference = FirebaseDatabase.getInstance().getReference("purchaseList");
 
-
+        // Set up button functionality
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 settleCosts();
-                // TODO - settle the cost
-                // iterate through itemList - each object holds
-                // total cost of purchase and who bought it,
-                // show information as described, then push
-                // null to the purchaseList reference to clear it
             }
         });
 
         loadShoppingList();
     }
 
+    /**
+     * Settles the cost of the purchases.
+     */
     private void settleCosts() {
         if (itemList.isEmpty()) {
             Toast.makeText(this, "No purchases to settle.", Toast.LENGTH_SHORT).show();
@@ -91,11 +100,11 @@ public class RecentPurchasesActivity extends AppCompatActivity
             roommateExpenses.put(buyer, roommateExpenses.getOrDefault(buyer, 0.0) + purchase.getPrice());
         }
 
-// Calculate the average amount spent
+        // Calculate the average amount spent
         int numberOfRoommates = roommateExpenses.size();
         double averageSpent = totalCost / numberOfRoommates;
 
-// Prepare the settlement details
+        // Prepare the settlement details
         StringBuilder result = new StringBuilder("Settlement Details:\n");
         for (Map.Entry<String, Double> entry : roommateExpenses.entrySet()) {
             String roommate = entry.getKey();
@@ -105,18 +114,21 @@ public class RecentPurchasesActivity extends AppCompatActivity
             result.append(String.format("%s spent: $%.2f, Difference: $%.2f\n", roommate, spent, difference));
         }
 
-// Add Total and Average on new lines
+        // Add Total and Average on new lines
         result.append(String.format("Total Spent: $%.2f\n", totalCost));  // Added a newline after Total Spent
         result.append(String.format("Average Spent: $%.2f", averageSpent)); // Added Average Spent on a new line
 
-// Launch SettlementDetailsActivity
+        // Launch SettlementDetailsActivity
         Intent intent = new Intent(this, SettlementDetailsActivity.class);
         intent.putExtra("settlementDetails", result.toString());
         startActivity(intent);
 
     }
 
-
+    /**
+     * Loads initial items from the purchaseList into
+     * the recycler view.
+     */
     private void loadShoppingList() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -139,6 +151,12 @@ public class RecentPurchasesActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Updates the price of a purchase in the database.
+     * @param key the key of the object
+     * @param position the position in the recycler view
+     * @param newPrice the new price to be set
+     */
     public void updatePrice(String key, int position, double newPrice) {
         DatabaseReference itemRef = databaseReference.child(key).child("price");
         itemRef.setValue(newPrice)

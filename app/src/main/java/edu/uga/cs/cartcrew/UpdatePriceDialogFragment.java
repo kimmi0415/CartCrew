@@ -18,23 +18,34 @@ import androidx.fragment.app.DialogFragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-// A DialogFragment class to handle changing the price of a purchase
+/**
+ * Dialog class used to handle updating the price of a
+ * previous purchase in the database.
+ */
 public class UpdatePriceDialogFragment extends DialogFragment {
 
     private EditText itemNameEditText, itemQuantityEditText;
 
-    private int position;
-    private String key;
-    private double originalPrice;
+    private int position; // the position in the adapter
+    private String key; // the key of the purchase in the database
+    private double originalPrice; // the original price of the purchase
 
-    // Interface for communicating with the activity
+    /**
+     * Interface for communicating with the parent activity.
+     */
     public interface UpdatePriceDialogFragmentListener {
         void updatePrice(String key, int position, double newPrice);
     }
 
     private UpdatePriceDialogFragmentListener listener;
 
-    // Static method to create a new instance of this dialog
+    /**
+     * Creates a new instance of the dialog.
+     * @param position the position in the adapter
+     * @param key the key of the purchase in the database
+     * @param originalPrice the current price as stored
+     * @return a new dialog instance
+     */
     public static UpdatePriceDialogFragment newInstance(int position, String key, double originalPrice) {
         UpdatePriceDialogFragment dialog = new UpdatePriceDialogFragment();
 
@@ -48,6 +59,10 @@ public class UpdatePriceDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Runs on attachment of the dialog.
+     * @param context the context of the parent activity
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -60,6 +75,13 @@ public class UpdatePriceDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Runs on creation of the dialog.
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the new dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -95,6 +117,9 @@ public class UpdatePriceDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Handles updating the price in the database.
+     */
     private void updatePrice() {
         String price = itemNameEditText.getText().toString();
 

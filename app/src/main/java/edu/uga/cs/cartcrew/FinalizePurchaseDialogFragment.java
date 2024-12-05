@@ -19,13 +19,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-// A DialogFragment class to handle finalizing a purchase
+/**
+ * A DialogFragment for finalizing a purchase.
+ * Allows the user to input the total price of the purchase and updates the database upon confirmation.
+ */
 public class FinalizePurchaseDialogFragment extends DialogFragment {
 
-    private EditText itemNameEditText, itemQuantityEditText;
+    private EditText itemNameEditText, itemQuantityEditText; // text entry fields
 
-    private AddShoppingItemDialogFragment.AddShoppingItemDialogListener listener;
+    private AddShoppingItemDialogFragment.AddShoppingItemDialogListener listener; // database communicator
 
+    /**
+     * Ran on attachment of the dialog.
+     * @param context the context of the parent activity
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -38,6 +45,13 @@ public class FinalizePurchaseDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Creates the dialog.
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return the new dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -68,9 +82,13 @@ public class FinalizePurchaseDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Used to add a new purchase to the purchase list.
+     */
     private void addItem() {
         String price = itemNameEditText.getText().toString();
 
+        // parse contents of EditText and push to database
         if (!price.isEmpty()) {
             try {
                 double parsedPrice = Double.parseDouble(price);
